@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Form</title>
+    <style>
+        .button {
+            background-color: #d8401a;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-decoration: none;
+        }
+        #search {
+            position: absolute;
+            top: 20px;
+            right: 150px;
+            width: 200px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #756e6e;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .container {
+            margin: 80px auto 20px; 
+            width: 80%;
+            max-width: 1200px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .item {
+            color:rgb(0, 0, 0);
+            width: 48%;
+            margin-bottom: 20px;
+            font-size: large;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-weight: 100;
+            padding: 10px;
+            border: 1px solid #010101;
+            border-radius: 8px;
+            background-color: #dce5f1;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .item img {
+            max-width: 100%;
+            height: auto;
+        }
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #ff0000;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        b {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+        .button1 {
+            background-color: #4CAF50; 
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+}
+
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; color: #d8401a;">FILE MANAGING AND DISPLAYING SYSTEM</h1>
+    <input type="text" id="search" placeholder="Search...">
+    <a target="_blank" href="http://127.0.0.1:5000" class="button">UPLOAD</a>
+    <div class="container">
+        {% for item in imagelist %}
+        <div class="item">
+            <button class="delete-button" onclick="deleteDocument('{{ item._id }}')">Delete</button>
+            {% if item.image %}
+                <img src="data:image/jpeg;base64,{{ item.image }}" alt="Image">
+            {% endif %}
+            <p><b>Description:</b> {{ item.description }}</p>
+            <p><b>Start Date:</b> {{ item["Start date"].strftime('%Y-%m-%d') }}</p>
+            <p><b>End Date:</b> {{ item["End date"].strftime('%Y-%m-%d') }}</p>
+            {% if item.document %}
+                 <a class="button1" href="/download/{{ item._id }}">Download Document</a>
+            {% endif %}
+
+        </div>
+    {% endfor %}
+    </div>
+    
+
+    <script>
+        function deleteDocument(documentId) {
+            if (confirm('Are you sure you want to delete this document?')) {
+                fetch(`/delete_document/${documentId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Failed to delete document.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting document:', error);
+                    alert('An error occurred while deleting the document.');
+                });
+            }
+        }
+
+        document.getElementById('search').addEventListener('input', function() {
+            var searchValue = this.value.toLowerCase();
+            var items = document.querySelectorAll('.item');
+            
+            items.forEach(function(item) {
+                var description = item.querySelector('p').innerText.toLowerCase();
+                if (description.indexOf(searchValue) > -1) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
