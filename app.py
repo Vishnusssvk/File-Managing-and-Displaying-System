@@ -12,7 +12,7 @@ from bson import ObjectId
 app = Flask(__name__)
 CORS(app)
 app.config['SECRET_KEY'] = 'your_secret_key' 
-uri = "mongodb+srv://admin:admin123@cluster0.lexpcdj.mongodb.net/mydatabase?retryWrites=true&w=majority&appName=Cluster0"
+uri = "mongodb+srv://username:password@cluster0.lexpcdj.mongodb.net/mydatabase?retryWrites=true&w=majority&appName=Cluster0"
 client = pymongo.MongoClient(uri)
 db = client['project']
 mydb = db['managingdata']
